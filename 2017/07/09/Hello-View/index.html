@@ -97,7 +97,26 @@
 <li><h4 id="public-MyView-Context-context-AttributeSet-attrs-int-defStyleAttr-int-defStyleRes"><a href="#public-MyView-Context-context-AttributeSet-attrs-int-defStyleAttr-int-defStyleRes" class="headerlink" title="public MyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)"></a>public MyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)</h4>　　如果没有使用 defStyleAttr ，则会应用 defStyleRes 到 View 的默认风格。该构造函数是在 API 21 的时候才添加上的</li>
 </ol>
 <hr>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><a href="http://www.androidchina.net/5035.html" target="_blank" rel="external">【Android 面试题总结之Android 进阶】</a><br><br><a>【Android 开发艺术探索】</a>
+<h2 id="4、View-的生命周期"><a href="#4、View-的生命周期" class="headerlink" title="4、View 的生命周期"></a>4、View 的生命周期</h2><ol>
+<li><p>相关方法见下图 <a href="https://developer.android.com/reference/android/view/View.html" target="_blank" rel="external">android.view.View(需要翻墙)</a></p>
+<p><img src="/2017/07/09/Hello-View/3.png" alt="image"></p>
+</li>
+<li><p>生命周期的调用顺序</p>
+<ol>
+<li>View 默认为可见的，不是默认值时先调用 onVisibilityChanged()，但是此时该 View 的尺寸、位置等信息都不知道。</li>
+<li>可见性改变后才是调用带有两个参数的构造函数，当然，如果该 View 不是在 layout 中定义的话，会调用一个参数的构造函数。</li>
+<li>从 XMl 文件中 inflate 完成（onFinishInflate()）。</li>
+<li>将 View 加到 window 中（ View 是 gone 的，那么 View 创建生命周期也就结束）。</li>
+<li>测量 view 的长宽（onMeasure()）。</li>
+<li>定位 View 在父 View 中的位置（onLayout()），若 View 是 invisible，则 View 的创建生命周期结束。</li>
+<li>绘制 View 的 content（onDraw()），只有可见的 View 才在 window 中绘制。</li>
+<li>View 的销毁流程和可见性没有关系。</li>
+</ol>
+</li>
+</ol>
+<h4 id="所以-View-的生命关键周期为："><a href="#所以-View-的生命关键周期为：" class="headerlink" title="所以 View 的生命关键周期为："></a>所以 View 的生命关键周期为：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[改变可见性] --&gt; 构造View() --&gt; onFinishInflate() --&gt; onAttachedToWindow() --&gt; onMeasure() --&gt; onSizeChanged() --&gt;onLayout() --&gt; onDraw() --&gt; onDetackedFromWindow()</div></pre></td></tr></table></figure>
+<hr>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><a href="http://www.androidchina.net/5035.html" target="_blank" rel="external">【Android 面试题总结之Android 进阶】</a><br><br><a>【Android 开发艺术探索】</a><br><br><a href="http://www.jianshu.com/p/08e6dab7886e" target="_blank" rel="external">【Android View的生命周期】</a>
 
 
   </article>
