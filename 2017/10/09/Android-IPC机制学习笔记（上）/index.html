@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="google-site-verification" content="" />
+  
+  <title>Android IPC机制学习笔记（上）</title>
+  <meta name="author" content="John Doe">
+   <meta name="description" content="Android IPC简介　　IPC机制（inter-process-Communication），进程间通信或跨进程通信，指两个进程进行数据交换的过程。　　IPC不是 Android 中独有的。在Android中最有特色的进程间通信方式就是 Binder 了，通过 Binder 可以轻松实现进程间">
+  
+
+  <meta property="og:title" content="Android IPC机制学习笔记（上）"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:site_name" content="Hexo"/>
+ <meta property="og:image" content="undefined"/>
+  
+  <link href="/apple-touch-icon-precomposed.png" sizes="180x180" rel="apple-touch-icon-precomposed">
+  <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/m.min.css">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+
+<body>
+  <a id="top"></a>
+  <div id='wx_pic' style='display:none;'><img src='/wx_share.png'/></div>
+  <div id="main">
+    <div class="behind">
+      <div class="back">
+        <a href="/" class="black-color"><i class="fa fa-times" aria-hidden="true"></i></a>
+      </div>
+      <div class="description">
+        &nbsp;
+      </div>
+    </div>
+    <div class="container">
+      
+
+  <article class="standard post">
+    <div class="title">
+      
+  
+    <h1 class="page-title center">
+        Android IPC机制学习笔记（上）
+    </h1>
+  
+
+
+    </div>
+    <div class="meta center">
+      
+<time datetime="2017-10-09T05:37:45.000Z">
+  <i class="fa fa-calendar"></i>&nbsp;
+  2017-10-09
+</time>
+
+
+
+    
+    &nbsp;
+    <i class="fa fa-tag"></i>&nbsp;
+    <a href="/categories/android/">android</a>
+
+
+
+
+
+    </div>
+    <hr>
+    <div class="picture-container">
+      
+    </div>
+    <h2 id="Android-IPC简介"><a href="#Android-IPC简介" class="headerlink" title="Android IPC简介"></a>Android IPC简介</h2><p>　　IPC机制（inter-process-Communication），进程间通信或跨进程通信，指两个进程进行数据交换的过程。<br>　　IPC不是 Android 中独有的。在Android中最有特色的进程间通信方式就是 Binder 了，通过 Binder 可以轻松实现进程间通信。除了Binder，Android 还支持Socket，通过 Socket 也可以实现任意两个终端的通信。</p>
+<h2 id="Android-中的多进程模式"><a href="#Android-中的多进程模式" class="headerlink" title="Android 中的多进程模式"></a>Android 中的多进程模式</h2><p>　　IPC机制既然是进程间通信或跨进程通信，那么学习 IPC机制之前我们就先来看看Android 中的多进程模式。</p>
+<h4 id="Android开启多进程模式"><a href="#Android开启多进程模式" class="headerlink" title="Android开启多进程模式"></a>Android开启多进程模式</h4><p>　　正常情况下，在 Android 中使用多进程的只有一种方法，就是给四大组件在 AndroidManifest中 指定 android：process 属性。其实还有另一种非常规的多进程方法，那就是通过 JNI 在 native 层去 fork 一个新的进程。但是这种方法比较特殊，也不是常用的创建多进程方法，所以暂不考虑。</p>
+<p>在 AndroidManifest 中指定 android：process 属性有几种不同的方式:</p>
+<ol>
+<li>不指定 android：process 属性 默认在默认进程（进程名为当前包名）下运行。</li>
+<li>android:process=”:remote” , 组件运行在进程（进程名为 packageName:remote）下。    </li>
+<li>android:process=”com.lrt.chapter2.remote” ，组件运行在进程、（com.lrt.chapter2.remote）中。<br><br></li>
+</ol>
+<h4 id="Android多进程模式的运行机制"><a href="#Android多进程模式的运行机制" class="headerlink" title="Android多进程模式的运行机制"></a>Android多进程模式的运行机制</h4><p>　　Android 为每个应用都分配了一个独立的虚拟机，或者说为每个进程都分配了一个独立的虚拟机。不同的虚拟机在内存上会有不同的地址，这就导致在不同的虚拟机中访问同一个类的对象就会产生多个副本，所以在多进程下无法直接操作静态变量。</p>
+<p>　　线程同步机制完全失效。</p>
+<p>　　SharedPreferences 的可靠性降低。因为 SharedPreferences 不支持两个进程同时去执行操作，否则会导致一定数据的丢失，这是因为 SharedPreferences 底层是通过读/写 xml 文件夹来实现的，并发读写都有可能出现问题。</p>
+<p>　　Application 对多次创建。当一个组件跑在一个新的进程中时，由于系统要创建新的进程并分配独立的虚拟机，因此相当于系统又把这个应用重新启动了一边，即然启动了，那么自然会创建新的 Application。 这个问题可以这么理解： 运行在同进程的组件属于同一个虚拟机同一个 Application，运行在不同进程的组件属于两个不同的虚拟机和 Application。 </p>
+<h2 id="IPC基础概念介绍"><a href="#IPC基础概念介绍" class="headerlink" title="IPC基础概念介绍"></a>IPC基础概念介绍</h2><p><b>　　IPC 中的基础概念主要包括三方面的内容：Serializable 接口、Parcelable 接口、Binder。 　Serializable　和 Parcelable 接口可以完成对象的序列化过程，当我们需要通过 Intent 和 Binder  传输数据时就需要使用 Serializable 和 Parcelable 接口。</b></p>
+<h4 id="１、Serializable"><a href="#１、Serializable" class="headerlink" title="１、Serializable"></a>１、Serializable</h4><p>　　Serializable　是　java　提供的一个序列化接口，是一个空的接口。为对象提供标准的序列化和反序列化操作。</p>
+<p>　　使用　Serializable 来实现对象的序列化非常简单，只要这个类实现Serializable 接口并声明一个serialVersionUID 即可。private static final long serialVersionUID =878458786668464L; 并且这个UID也不是必须的。 Serializable 的实现过程也很简单：如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">//序列化过程</div><div class="line">User user=new User();</div><div class="line">ObjectOutputStream  out=new ObjectOutputStream(</div><div class="line">new FileOutputStream(“cache.txt”));</div><div class="line">out.writeObject(user);</div><div class="line">out.close();</div><div class="line">//反序列化过程</div><div class="line">ObjectInputStream in=new ObjectInputStream(</div><div class="line">new FileInputStream(“cache.txt”);</div><div class="line">User user=(User) in.readObject();</div><div class="line">in.close();</div></pre></td></tr></table></figure></p>
+<h4 id="２、Parcelable"><a href="#２、Parcelable" class="headerlink" title="２、Parcelable"></a>２、Parcelable</h4><p>　　Parcelable 也是一个接口，只要实现这个接口，一个类的对象就可以实现序列化并可以通过　Intent 和 Binder 传递。<br>　　使用 Parcelable 序列化，要先实现 Parcelable 接口，然后要实现 Parcel 类的序列化、反序列化和内容描述几个方法。下图是一个基本用法: </p>
+<p><img src="/2017/10/09/Android-IPC机制学习笔记（上）/1.jpg" alt="image"><br><br></p>
+<h4 id="3、Binder"><a href="#3、Binder" class="headerlink" title="3、Binder"></a>3、Binder</h4><p>　　<b>理解Binder: </b>Binder 是 Android 中的一个类，它实现了 IBinder 接口。从 IPC 角度来说，Binder 是 Android 中的一种跨进程通信方法，Binder 还可以理解为一种虚拟的物理设备，它的驱动设备是 /dev/binder，该通信方式在 Linux中 没有；从 AndroidFramwork 角度来说，Binder 是 ServiceManager 连接各种 Manager （ActivityManager、WindowManager等等）和相应 ManagerService 的桥梁；从 Android 应用层来说，Binder 是客户端和服务端进行通信的媒介，当 bindService 的时候，服务端会返回一个包含了服务端业务调用的 Binder 的对象，通过这个 Binder 对象，客户端就可以获取服务端提供的服务或数据，这里的服务包括普通服务和基于AIDL的服务。</p>
+<p>　　在 Android 开发中，Binder 主要用于在 Service 中，包括 AIDL 和 Messenger，其中普通的 Service  中不涉及进程间通信，而 Messenger 的底层原理是 AIDL。 所以为了分析 Binder，需要新建一个AIDL示例。</p>
+<h4 id="3-1-通过-AIDL-分析-Binder"><a href="#3-1-通过-AIDL-分析-Binder" class="headerlink" title="3.1 通过 AIDL 分析 Binder"></a>3.1 通过 AIDL 分析 Binder</h4><p>（1）首先新建一个 AIDL 示例：</p>
+<ol>
+<li>新建一个 Book.java 表示一个图书信息的类，实现 Parcelable 接口。</li>
+<li><p>Book.aidl 是 Book 类在 AIDL 中的声明。 <img src="/2017/10/09/Android-IPC机制学习笔记（上）/2.jpg" alt="image"></p>
+</li>
+<li><p>IBookManager.aidl 是我们定义的一个接口，里面有两个方法：getBookList 和 addBook。 <img src="/2017/10/09/Android-IPC机制学习笔记（上）/3.jpg" alt="image"> </p>
+</li>
+<li><p>As 编译过后，系统会自动给我们在 gen 目录下的 aidl 包中为 IBookManager.aidl 生成一个叫 IBookManager.java 的 Binder 类。这就是 AIDL 的特殊之处。</p>
+</li>
+</ol>
+<p>（2）下面我们来分析一下系统生成的 IBookManager.java 这个类。<br>　　IBookManager.java 继承了 IInterface 接口，同时它自己还是个接口，所有可以在 Binder 中传输的类都要继承 IInterface 接口。</p>
+<p>　　这个类的方法的详细含义：</p>
+<ol>
+<li>DESCRIPTOR:    <b>—-&gt;</b>  Binder的唯一标识，一般用当前类名表示。</li>
+<li>asInterface(android.os.IBinder obj):    <b>—-&gt;</b>  用于将服务端的Binder 对象转换成客户端所需的AIDL 接口类型的对象。这种转换过程是区分进程的，如果客户端和服务端在统一进程，那么返回的就是 Stub 对象本身，否则返回的是系统封装好的 Stub.proxy 对象。</li>
+<li>asBinder:    <b>—-&gt;</b>  此方法用于返回当前Binder对象。</li>
+<li>onTransact:    <b>—-&gt;</b>  这个方法运行在服务端的线程池中，当客户端发起跨进程请求时，远程请求会通过系统底层封装后交由此方法来处理。该方法的原型为 public Boolean onTransact(int code,Parcel data,Parcel reply,int flags)。服务端通过code 可以确定客户端所请求的目标方法是什么，接着从data 里面取出目标方法所需的参数，然后执行目标方法。等目标方法执行完毕后，就行reply写入返回值。需要注意的是，如果此方法返回false，那么客户端的请求会失败，我们可以利用这个特性来做权限验证。</li>
+<li>Proxy# getBookList/addBook:    <b>—-&gt;</b>  这个方法运行在客户端，当客户端调用此方法时，它的内部是这样实现的： 首先创建该方法所需要的输入型Parcel 对象 _data、输出型Parcel 对象 __reply、和返回值对象List； 然后把该方法的参数信息写入_data中；接着调用transact方法来发起RPC（远程过程调用）请求，同时当前线程挂起；然后服务端的onTransact 方法会被调用，直到RPC过程返回后，当前线程继续执行，并从_reply 中取出RPC过程返回的结果；最后返回_reply 中的数据。</li>
+</ol>
+<p>　　通过对上面方法的分析，我们应该已经了解 Binder 机制了。但是有两点需要注意：首先，当客户端发起远程请求时，由于当期线程会被挂起直至服务端进程返回数据，所以如果一个远程方法是很耗时的，那么不能在UI线程中发起此请求；其次，由于服务端的Binder 方法运行在Binder的线程池中，所以Binder方法不管是否耗时都应该采用同步的方法去实现，因为它已经运行在一个线程池中了。为了更好地说明Binder 下面有一个Binder的工作机制图。</p>
+<p><img src="/2017/10/09/Android-IPC机制学习笔记（上）/4.jpg" alt="image"> </p>
+<p>　　从上面的分析过程来看，我们完全可以不使用AIDL 文件即可实现Binder，之所以提供AIDL文件，是为了方便系统为我们生成代码。系统根据AIDL 文件生成java 文件的格式是固定的，我们可以抛开AIDL文件直接写一个Binder出来。</p>
+<h4 id="3-2-手动实现-Binder"><a href="#3-2-手动实现-Binder" class="headerlink" title="3.2 手动实现 Binder"></a>3.2 手动实现 Binder</h4><p>　　参考系统生成的 IBookManager.java 这个类的代码，可以发现这个类主要有两部分组成，首先它本身是一个 Binder 接口（继承了 IInterface），其次它的内部有个 Stub 类，这个类就是个 Binder。还记得我们怎么写一个 Binder 的服务端吗？代码如下所示。</p>
+<p><img src="/2017/10/09/Android-IPC机制学习笔记（上）/5.jpg" alt="image"> </p>
+<p>　　首先我们会实现一个创建了一个 Stub 对象并在内部实现 IBookManager 的接口方法，然后在 Service 的 onBind 中返回这个 Stub 对象。    因此从这一点来看，我们完全可以把 Stub 类提取出来直接作为一个独立的 Binder 类来实现，这样 IBookManager 中就只剩接口本身了，通过这种分离的方式可以让它的结构变得清晰点。</p>
+<p>　　根据上面的思想，手动实现一个Binder可以通过以下步骤来完成：</p>
+<h4 id="1-声明一个-AIDL-性质的接口，只需要继承-IInterface-接口即可，IInterface-接口中只有一个-asBinder-方法。代码如下所示："><a href="#1-声明一个-AIDL-性质的接口，只需要继承-IInterface-接口即可，IInterface-接口中只有一个-asBinder-方法。代码如下所示：" class="headerlink" title="(1) 声明一个 AIDL 性质的接口，只需要继承 IInterface 接口即可，IInterface 接口中只有一个 asBinder 方法。代码如下所示："></a>(1) 声明一个 AIDL 性质的接口，只需要继承 IInterface 接口即可，IInterface 接口中只有一个 asBinder 方法。代码如下所示：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"> public interface IBookManager extends IInterface&#123;</div><div class="line"></div><div class="line">    static final String DESCRIPTOR =&quot;com.aidldemo.IBookManager&quot;;</div><div class="line"></div><div class="line">    static final int TRANSACTION_getBookList= IBinder.FIRST_CALL_TRANSACTION+0;</div><div class="line"></div><div class="line">    static final int TRANSACTION_addBook=IBinder.FIRST_CALL_TRANSACTION+1;</div><div class="line"></div><div class="line">    public List&lt;Book&gt; getBookList() throws RemoteException;</div><div class="line"></div><div class="line">    public void addBook(Book book) throws RemoteException;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2-实现Stub-类和Stub类中的Proxy代理类，这段代码只需要参考系统生成的代码即可，代码如下图所示："><a href="#2-实现Stub-类和Stub类中的Proxy代理类，这段代码只需要参考系统生成的代码即可，代码如下图所示：" class="headerlink" title="(2) 实现Stub 类和Stub类中的Proxy代理类，这段代码只需要参考系统生成的代码即可，代码如下图所示："></a>(2) 实现Stub 类和Stub类中的Proxy代理类，这段代码只需要参考系统生成的代码即可，代码如下图所示：</h4><p><img src="/2017/10/09/Android-IPC机制学习笔记（上）/6.jpg" alt="image"><br><img src="/2017/10/09/Android-IPC机制学习笔记（上）/7.jpg" alt="image"><br><img src="/2017/10/09/Android-IPC机制学习笔记（上）/8.jpg" alt="image"><br><img src="/2017/10/09/Android-IPC机制学习笔记（上）/9.jpg" alt="image"> </p>
+
+
+  </article>
+  </script>
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <div class="busuanzi center">
+    页阅读量:&nbsp;<span id="busuanzi_value_page_pv"></span>&nbsp;・&nbsp;
+    站访问量:&nbsp;<span id="busuanzi_value_site_pv"></span>&nbsp;・&nbsp;
+    站访客数:&nbsp;<span id="busuanzi_value_site_uv"></span>
+  </div>
+
+
+
+
+    </div>
+  </div>
+  <footer class="page-footer"><div class="clearfix">
+</div>
+<div class="right-foot container">
+    <div class="firstrow">
+        <a href="#top" target="_self">
+        <i class="fa fa-arrow-right"></i>
+        </a>
+        © Created 2017-6-22
+    </div>
+    <div class="secondrow">
+        <a href="https://github.com/gaoryrt/hexo-theme-pln">
+        Theme Pln
+        </a>
+    </div>
+</div>
+<div class="clearfix">
+</div>
+</footer>
+  <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+
+// disqus scripts
+
+
+// dropdown scripts
+$(".dropdown").click(function(event) {
+  var current = $(this);
+  event.stopPropagation();
+  $(current).children(".dropdown-content")[($(current).children(".dropdown-content").hasClass("open"))?'removeClass':'addClass']("open")
+});
+$(document).click(function(){
+    $(".dropdown-content").removeClass("open");
+})
+
+var path = "/search.xml";
+searchFunc(path, 'local-search-input', 'local-search-result');
+
+</script>
+
+</body>
+</html>
