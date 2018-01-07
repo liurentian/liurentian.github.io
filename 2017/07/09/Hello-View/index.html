@@ -1,0 +1,427 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <!--Setting-->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no,email=no,adress=no">
+    <meta name="browsermode" content="application">
+    <meta name="screen-orientation" content="portrait">
+    <link rel="dns-prefetch" href="http://yoursite.com">
+    <!--SEO-->
+
+
+
+<meta name="robots" content="all" />
+<meta name="google" content="all" />
+<meta name="googlebot" content="all" />
+<meta name="verify" content="all" />
+    <!--Title-->
+
+
+<title>Hello View | Hexo</title>
+
+
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+
+
+    <link rel="icon" href="/favicon.ico">
+
+    
+
+
+
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css?rev=9.12.0">
+
+
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css?rev=3.3.4">
+<link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="/css/style.css?rev=@@hash">
+
+
+
+
+    
+    <div class="hide">
+    	<script src="https://s4.cnzz.com/z_stat.php?id=1263868967&web_id=1263868967" language="JavaScript"></script>
+    </div>
+
+
+
+
+
+
+    
+</head>
+
+
+<!--[if lte IE 8]>
+<style>
+    html{ font-size: 1em }
+</style>
+<![endif]-->
+<!--[if lte IE 9]>
+<div style="ie">你使用的浏览器版本过低，为了你更好的阅读体验，请更新浏览器的版本或者使用其他现代浏览器，比如Chrome、Firefox、Safari等。</div>
+<![endif]-->
+
+<body>
+    <header class="main-header"  style="background-image:url(http://7xpw2b.com1.z0.glb.clouddn.com/hexo-sinppet/img/banner2.jpg)"  >
+    <div class="main-header-box">
+        <a class="header-avatar" href="/" title="">
+            <img src="/img/avatar.jpg" alt="logo头像">
+        </a>
+        <div class="branding">
+        	<!--<h2 class="text-hide">Snippet主题,从未如此简单有趣</h2>-->
+            
+                 <img src="/img/branding.png" alt="Snippet 博客主题">  
+             
+    	</div>
+    </div>
+</header>
+    <nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header"><span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu" id="mnav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <i class="fa fa-bars"></i>
+                    </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        
+                            <li role="presentation"><a href="/"><i class="fa fa-fw "></i>首页</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/Android/"><i class="fa fa-fw "></i>Android</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/后端/"><i class="fa fa-fw "></i>后端</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw "></i>工具</a>
+                            </li>
+                        
+                            <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw "></i>随笔</a>
+                            </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+    <section class="content-wrap">
+        <div class="container">
+            <div class="row">
+                <main class="col-md-8 main-content m-post">
+                    <p id="process"></p>
+<article class="post">
+    <div class="post-head">
+        <h1 id="Hello View">
+            
+            Hello View
+            
+        </h1>
+        <div class="post-meta">
+    
+    
+    <span class="categories-meta fa-wrap">
+        <i class="fa fa-folder-open-o"></i>
+        <span>Android</span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-tags"></i>
+        <span class="tags-meta">
+            
+            Android View 专题
+            
+        </span>
+    </span>
+    
+    
+    <span class="fa-wrap">
+        <i class="fa fa-clock-o"></i>
+        <span class="date-meta">2017/07/09</span>
+    </span>
+</div>
+
+            
+            
+    </div>
+    
+    <div class="post-body post-content">
+        <blockquote><p>　作为一个 Android 开发者，几乎每一个 Android 项目都离不开 View，虽然说 View 不属于四大组件，但它的重要性丝毫不低于它们，因此今天让我们来重新认识一下 View。</p>
+</blockquote>
+<h2 id="1、什么是-View-？"><a href="#1、什么是-View-？" class="headerlink" title="1、什么是 View ？"></a>1、什么是 View ？</h2><pre><code>    View（视图）是 Android 中所有控件的基类，不管是简单的 TextView 和 Button 还是 RelativeLayout 和 ListView 他们的共同基类都是 View 。RelativeLayout 继承的 ViewGroup （控件组）也继承自 View ，ViewGroup 内部包含了许多个控件，即一组 View 。所以说 View 是一种界面层的控件的一种抽象，它代表了一个控件或一组控件。
+</code></pre><p>下面一张图可以帮助你理解常用的控件关系</p>
+<p><img src="/2017/07/09/Hello-View/1.png" alt="图片加载失败"><br><br></p>
+<h2 id="2、View-的位置参数"><a href="#2、View-的位置参数" class="headerlink" title="2、View 的位置参数"></a>2、View 的位置参数</h2><pre><code>    View 的位置主要由它的四个顶点来决定，分别对应与 View 的四个属性： top、left、right、bottom。需要注意的是，这些坐标都是相对与 View 的父容器来说的，因此它是一种相对坐标。 View 的坐标和父容器的关系见下图：
+</code></pre><p><img src="/2017/07/09/Hello-View/2.png" alt="图片加载失败"></p>
+<p>根据这张图，我们可以很容易的得出 View 的宽高和坐标的关系：</p>
+<pre><code>width = right - left 
+height = bottom - top
+</code></pre><p>那么如何得到 View 的这四个参数呢？ 也很简单，在 View 的源码中它们对应与 mLeft、mRight、mTop、mBottom这四个成员变量，获取方式如下：</p>
+<pre><code>left = getLeft();
+right = getRight();
+top = getTop();
+bottom = getBottom();
+</code></pre><p>　　从 Android3.0 开始, View 增加了几个额外的参数：　x、y、translationX　和　translationＹ，其中 x 和 y 是 View 左上角的坐标，而 translationX 和 translationY 是 View 左上角相对与父容器的偏移量。这几个参数也是相对与父容器的坐标，并且 translationX 和 translationY 的默认值是 0，和 View 的四个基本位置参数一样，View 也为它们提供了 get/set 方法，这几个参数的换算关系如下：</p>
+<pre><code>x = left + translationX 
+y = top  + translationY
+</code></pre><p>　　需要注意的是，View 在平移的过程中，top 和 left 表示的是原始左上角的位置信息，其值并不会发生改变，此时发生改变的是 x、y、translationX 和 translationY 这四个参数。<br><br></p>
+<h2 id="3、View-的四个构造函数"><a href="#3、View-的四个构造函数" class="headerlink" title="3、View 的四个构造函数"></a>3、View 的四个构造函数</h2><p><br></p>
+<ul>
+<li><strong>public MyView(Context context)</strong></li>
+</ul>
+<p>　　java 代码直接 new 一个 Custom View 实例的时候,会调用第一个构造函数</p>
+<ul>
+<li><strong>public MyView(Context context,AttributeSet attrs)</strong></li>
+</ul>
+<p>　　在 xml 创建但是没有指定 style 的时候被调用。多了一个 AttributeSet 类型的参数，自定义属性，在通过布局文件 xml 创建一个 view 时，会把 XML 内的参数通过 AttributeSet 带入到 View 内。</p>
+<ul>
+<li><strong>public MyView(Context context,AttributeSet attrs,int defStyleAttr)</strong></li>
+</ul>
+<p>　　构造函数中第三个参数是默认的 Style，这里的默认的 Style 是指它在当前 Application 或 Activity 所用的 Theme 中的默认 Style ，且只有在明确调用的时候才会调用</p>
+<ul>
+<li><strong>public MyView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)</strong></li>
+</ul>
+<p>　　如果没有使用 defStyleAttr ，则会应用 defStyleRes 到 View 的默认风格。该构造函数是在 API 21 的时候才添加上的</p>
+<p><br></p>
+<h2 id="4、View-的生命周期"><a href="#4、View-的生命周期" class="headerlink" title="4、View 的生命周期"></a>4、View 的生命周期</h2><pre><code>相关方法见下图
+</code></pre><p><img src="/2017/07/09/Hello-View/3.png" alt="图片加载失败"></p>
+<p><strong>生命周期的调用顺序</strong></p>
+<ol>
+<li>View 默认为可见的，不是默认值时先调用 onVisibilityChanged()，但是此时该 View 的尺寸、位置等信息都不知道。</li>
+<li>可见性改变后才是调用带有两个参数的构造函数，当然，如果该 View 不是在 layout 中定义的话，会调用一个参数的构造函数。</li>
+<li>从 XMl 文件中 inflate 完成（onFinishInflate()）。</li>
+<li>将 View 加到 window 中（ View 是 gone 的，那么 View 创建生命周期也就结束）。</li>
+<li>测量 view 的长宽（onMeasure()）。</li>
+<li>定位 View 在父 View 中的位置（onLayout()），若 View 是 invisible，则 View 的创建生命周期结束。</li>
+<li>绘制 View 的 content（onDraw()），只有可见的 View 才在 window 中绘制。</li>
+<li>View 的销毁流程和可见性没有关系。</li>
+</ol>
+<p><strong>所以 View 的生命关键周期为：</strong></p>
+<pre><code>[改变可见性] --&gt; 构造View() --&gt; onFinishInflate() --&gt; onAttachedToWindow() --&gt; onMeasure() --&gt; onSizeChanged() --&gt;onLayout() --&gt; onDraw() --&gt; onDetackedFromWindow()
+</code></pre><hr>
+<p><strong>参考资料</strong><br><a href="http://www.androidchina.net/5035.html" target="_blank" rel="noopener">【Android 面试题总结之Android 进阶】</a><br><a>【Android 开发艺术探索】</a><br><a href="https://www.jianshu.com/p/08e6dab7886e" target="_blank" rel="noopener">【Android View的生命周期】</a></p>
+
+    </div>
+
+    <div class="post-footer">   
+        <div>
+            
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">Snippet</a>
+            
+        </div>
+        <div>
+            
+        </div>  
+    </div>
+</article>
+
+<div class="article-nav prev-next-wrap clearfix">
+    
+        <a href="/2017/07/15/View的事件分发机制/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
+    
+    
+        <a href="/2017/07/01/Java-多线程初探/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+</div>
+
+
+    <div id="comments">
+        
+    <div id="uyan_frame"></div>
+    <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2153056"></script>
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+                </main>
+                
+    <aside class="col-md-4 sidebar">
+        
+        
+    <div class="widget">    
+        <h3 class="title">搜索</h3>
+        <div id="search-form">
+            <div id="result-mask" class="hide"></div>
+            <div class="search-area">
+                
+                    <input id="search-key" type="search" autocomplete="off" placeholder="搜点什么呢?">
+                    <button type="button" class="search-form-submit" id="search-local">站内搜索</button>
+                
+                
+            </div>
+            <div id="result-wrap" class="hide">
+                <div id="search-result"></div>
+            </div>
+            <div class="hide">
+                <template id="search-tpl">
+                    <div class="item">
+                        <a href="/{path}" title="{title}">
+                            <div class="title">{title}</div>
+                            <div class="content">{content}</div>
+                        </a>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget notification">
+        <h3 class="title">网站公告</h3>
+        <div>
+            <p>主题Snippet v1.2.0版本已经上线！欢迎更新~ <br/>
+主题下载：<a href="https://github.com/shenliyang/hexo-theme-snippet" title="fork me" target="_blank">Snippet主题</a> <br/>
+<hr/>接受贡献，包括不限于提交问题与需求，修复代码。欢迎Pull Request<br/>支持主题：<a href="https://github.com/shenliyang/hexo-theme-snippet/stargazers">Star一下</a>
+</p>
+        </div>
+    </div>
+
+        
+        
+    <div class="widget">
+      <h3 class="title">社交</h3> 
+        <div class="content social">
+            
+	            <a href="//github.com/liurentian" rel="external nofollow" title="Github" target="_blank">
+			    	<i class="git fa fa-git"></i>
+			    </a>
+            
+	            <a href="mailto:snippet@91h5.cc" rel="external nofollow" title="邮箱" target="_blank">
+			    	<i class="envelope-o fa fa-envelope-o"></i>
+			    </a>
+            
+	            <a href="/mqqwpa //im/chat?chat_type=wpa&uin=574201314&version=1" rel="external nofollow" title="联系QQ" target="_blank">
+			    	<i class="qq fa fa-qq"></i>
+			    </a>
+            
+	            <a href="/" rel="external nofollow" title="微博" target="_blank">
+			    	<i class="weibo fa fa-weibo"></i>
+			    </a>
+            
+	            <a href="/" rel="external nofollow" title="QQ群" target="_blank">
+			    	<i class="users fa fa-users"></i>
+			    </a>
+            
+	            <a href="/atom.xml" rel="external nofollow" title="RSS" target="_blank">
+			    	<i class="feed fa fa-feed"></i>
+			    </a>
+            
+        </div>
+    </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">分类</h3>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/"><i class="fa" aria-hidden="true">Android</i></a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link current" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">2</span></li></ul>
+    </div>
+
+
+        
+        
+    <div class="widget">
+      <h3 class="title">归档</h3>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">十二月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">十月 2017</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">九月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">七月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">六月 2017</i></a><span class="archive-list-count">1</span></li></ul>
+    </div>
+
+
+        
+        
+  <div class="widget">
+    <h3 class="title">标签云</h3>
+    <div class="content tag-cloud">
+        <a href="/tags/Android-View-专题/" style="font-size: 20px;">Android View 专题</a> <a href="/tags/Android-进程间通信/" style="font-size: 20px;">Android 进程间通信</a> <a href="/tags/JavaSE-多线程/" style="font-size: 10px;">JavaSE 多线程</a>
+    </div>
+  </div>
+
+
+        
+        
+    <div class="widget">
+        <h3 class="title">友链</h3>
+        <div class="content friends-link">
+        
+            <a href="http://www.shenliyang.com" class="fa" target="_blank">个人博客</a>
+        
+        </div>
+    </div>
+
+
+        
+    </aside>
+
+            </div>
+        </div>
+    </section>
+    <footer class="main-footer">
+    <div class="container">
+        <div class="row">
+        </div>
+    </div>
+</footer>
+
+<a id="back-to-top" class="hide">
+	<i class="fa fa-chevron-up"></i>
+</a>
+
+
+
+
+    <div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12"> 
+                <span>Copyright &copy; 2017
+                </span> | 
+                <span>
+                    Powered by <a href="//hexo.io" class="copyright-links" target="_blank" rel="nofollow">Hexo</a>
+                </span> | 
+                <span>
+                    Theme by <a href="//github.com/shenliyang/hexo-theme-snippet.git" class="copyright-links" target="_blank" rel="nofollow">Snippet</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <script src="/assets/highlight.pack.js?rev=@@hash"></script>
+  <script>
+     hljs.initHighlightingOnLoad(); //初始化代码高亮 
+  </script>
+
+
+
+	<script src="/js/search.js?rev=@@hash"></script>
+
+
+<script src="/js/app.js?rev=@@hash"></script>
+
+
+</body>
+</html>
