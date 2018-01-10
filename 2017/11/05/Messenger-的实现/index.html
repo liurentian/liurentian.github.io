@@ -24,7 +24,7 @@
     <!--Title-->
 
 
-<title>2017 年终总结 | Hexo</title>
+<title>Messenger 的实现 | Hexo</title>
 
 
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
@@ -120,9 +120,9 @@
                     <p id="process"></p>
 <article class="post">
     <div class="post-head">
-        <h1 id="2017 年终总结">
+        <h1 id="Messenger 的实现">
             
-            2017 年终总结
+            Messenger 的实现
             
         </h1>
         <div class="post-meta">
@@ -130,7 +130,7 @@
     
     <span class="categories-meta fa-wrap">
         <i class="fa fa-folder-open-o"></i>
-        <span>随笔</span>
+        <span>Android</span>
     </span>
     
     
@@ -138,7 +138,7 @@
         <i class="fa fa-tags"></i>
         <span class="tags-meta">
             
-            null
+            Android 进程间通信
             
         </span>
     </span>
@@ -146,7 +146,7 @@
     
     <span class="fa-wrap">
         <i class="fa fa-clock-o"></i>
-        <span class="date-meta">2017/12/31</span>
+        <span class="date-meta">2017/11/05</span>
     </span>
 </div>
 
@@ -155,34 +155,134 @@
     </div>
     
     <div class="post-body post-content">
-        <blockquote><p>12-31号 晚上11点，2017年的最后一天。</p>
-<p>这一年，从上课到上班、从点名到打卡、从花钱到挣钱、从自认为天下无敌到承认自己是傻逼。</p>
-<p>这一年，像不喜欢动画片一样，对游戏突然少了很多兴趣。</p>
-<p>这一年，其实没多大改变</p>
-</blockquote>
-<p><img src="/2017/12/31/2017-年终总结/1.jpg" alt="图片加载失败"></p>
-<p><br></p>
-<p><strong>总结一下年底开始做的三件事，也是我认为值得坚持下去的三件事：</strong></p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>Messenger 的使用方法很简单，它对 AIDL 做了封装，使得我们可以更简单的进行进程间的通信。同时，因为它一次处理一个请求，因此在服务端我们不用考虑线程同步的问题，这是因为服务端不存在并发执行的情形。实现一个 Messenger 有如下几个步骤，分为服务端和客户端。</p>
 <ol>
-<li><p>工作。</p>
-<p> 　　工作的首要目的肯定是为了生存，不向家里要钱。但是我又一直想从无到有地写出一个 属于我的App在我真正毕业的时候。 正好借着这个平台，只希望我可以尽量把它做到更好。</p>
+<li><p><strong>服务端进程</strong></p>
+<p>首先我们需要在服务端创建一个 Service 来处理客户端的连接请求。同时创建一个 Handler 并通过它来创建一个 Messenger 对象，然后在 Service 中的 onBind 中返回这个 Messenger 对象底层的 Binder 即可。</p>
 </li>
-<li><p>专升本。</p>
-<p> 　　说起专升本，我自己都搞不懂。早些时候我妈就跟我说让我专升本，当时我是十分坚决的说我肯定不会升，上了还得浪费两年。 没想到才出校门没两个月，自己就乖乖报了名，至于原因我只能安慰自己说（上学只有这两年了，而工作则可能是你以后的一生）。 </p>
-<p> 　　还记得17年之前，我跟周围的人总是会说：即使现在让我再去高三一年，我肯定还是不会好好学。但是从今年6月份开始，不知道怎么回事，突然感到十几年学的东西好像真的能排上用场，只可惜自己学到的太少。</p>
-<p> 　　如果我们从小学的东西都能够马上用到生活上，可能这会儿都成学霸了。</p>
-</li>
-<li><p>理财。</p>
-<p> 　　这两个字，在之前我是完全没想过，也不敢想的。因为我根本没有财可理。</p>
-<p> 　　但在上个单位的一个姐，让我重新了解了它，当我刚听懂她的科普后，我就知道了这就是我感兴趣的。</p>
-<p> 　　当然，现在我并算不上什么理财，只是在下班之余了解/关注了一些理财的新闻/公众号，最近也开始定投了一只基金，就当赞个零花钱。</p>
+<li><p><strong>客户端进程</strong></p>
+<p>客户端进程中，首先要绑定服务端的 Service，绑定成功后用服务端返回的 IBinder 创建一个 Messenger，通过这个 Messenger 就可以向服务端发送消息了，发送的消息类型为 Message 对象。如果需要服务端能够回应客户端，就和服务端一样，我们还需要在创建一个 Handler 并创建一个新的 Messenger，并把这个 Messenger 对象通过 Message 的 replyTo 参数传递给服务端，服务端通过这个 replyTo 参数就可以回应客户端。</p>
 </li>
 </ol>
-<p><strong> 　　这三件事都是刚刚开始下手的，前两件也都会在18年的6月份接近帷幕，正好也就是我第一篇 Hello world 中说的一年以后。 </strong><br><br></p>
-<p><strong> 　　所以，2017并没有结束，一切才刚刚开始 </strong></p>
-<p><strong> 　　2018，希望你能真正像别人看起来的一样努力。</strong></p>
-<p><br></p>
-<iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="//music.163.com/outchain/player?type=2&id=25706277&auto=0&height=66"></iframe>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a><strong>目录</strong></h2><p>通过下面两个例子理解 Messenger 的使用</p>
+<ol>
+<li>简单的服务端不需要回应客户端的例子：</li>
+<li>服务端回应客户端</li>
+</ol>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a><strong>正文</strong></h2><h3 id="1、简单的服务端不需要回应客户端的实现"><a href="#1、简单的服务端不需要回应客户端的实现" class="headerlink" title="1、简单的服务端不需要回应客户端的实现"></a>1、简单的服务端不需要回应客户端的实现</h3><p>首先看服务端，服务端创建了一个 MessengerHandler 用来处理客户端发送的消息，接着创建了一个 Messenger 对象并和 MessengerHandler 相关联。最后在 onBind 里面返回 mMessenger 对象里面的 Binder。</p>
+<pre><code>
+public class MessengerService extends Service {
+
+    private static final String TAG = &quot;MessengerService&quot;;
+
+    private static class MessengerHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MyConstant.MSG_FROM_CLIENT:
+                    Log.i(TAG, &quot;收到客户端的消息:&quot; + msg.getData().getString(&quot;msg&quot;));
+                    break;
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    }
+
+    private final Messenger mMessenger = new Messenger(new MessengerHandler());
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mMessenger.getBinder();
+    }
+}
+</code></pre><p>然后，注册Service，让它运行在不同的进程中。作为服务端</p>
+<pre><code> &lt;service
+            android:name=&quot;.messenger.MessengerService&quot;
+            android:process=&quot;:remote&quot; /&gt;
+</code></pre><p>接下来看看客户端的实现，客户端的实现也很简单，首先要绑定远程进程的服务 MessengerService，在绑定成功后，根据服务端返回的 Binder 对象创建 Messenger 对象并使用此对象向服务端发送消息。这样程序运行时，服务端就会收到客户端发送的消息。</p>
+<pre><code>
+public class MessengerActivity extends AppCompatActivity {
+    private static final String TAG = &quot;MessengerActivity&quot;;
+
+    private Messenger mService;
+
+    private ServiceConnection mConnection=new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            mService=new Messenger(iBinder);
+            Message msg = Message.obtain(null, MyConstant.MSG_FROM_CLIENT);
+            Bundle data=new Bundle();
+            data.putString(&quot;msg&quot;,&quot;你好，这里是客户端!&quot;);
+            msg.setData(data);
+            try {
+                mService.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_messenger);
+        Intent intent =new Intent(this,MessengerService.class);
+        bindService(intent,mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        unbindService(mConnection);
+        super.onDestroy();
+    }
+}
+</code></pre><h3 id="2、服务端回应客户端消息"><a href="#2、服务端回应客户端消息" class="headerlink" title="2、服务端回应客户端消息"></a>2、服务端回应客户端消息</h3><p>上面的例子演示了如何在服务端接收客户端发送的消息，但有时候我们可能还需要回应客户端。下面我们来看看怎么给客户端回复消息。</p>
+<p>首先看服务端的修改，服务端只需要修改 MessengerHandler，在接受到消息时，通过消息的 replyTo 得到客户端的 Messenger 对象，给客户端回复一条消息。代码如下:</p>
+<pre><code>private static class MessengerHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MyConstant.MSG_FROM_CLIENT:
+                    Log.i(TAG, &quot;收到客户端的消息:&quot; + msg.getData().getString(&quot;msg&quot;));
+                    Messenger client = msg.replyTo;
+                    Message replyMsg = Message.obtain(null, MyConstant.MSG_FROM_SERVER);
+                    Bundle bundle=new Bundle();
+                    bundle.putString(&quot;reply&quot;,&quot;你的消息我已收到，稍后回复你。&quot;);
+                    replyMsg.setData(bundle);
+                    try {
+                        client.send(replyMsg);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+
+                    break;
+                default:
+                    super.handleMessage(msg);
+            }
+        }
+    }
+</code></pre><p>接下来看客户端的代码的修改，为了接受服务端回复的消息，客户端也要准备一个 Messenger 和 Handler。如下所示：</p>
+<p><img src="/2017/11/05/Messenger-的实现/1.jpg" alt="图片加载失败"></p>
+<p>除了上述修改，我们还需要在客户端发送消息时，需要把接受服务端消息的 Messenger 通过 Message.replyTo 参数发送给服务端。如下所示:</p>
+<p><img src="/2017/11/05/Messenger-的实现/2.jpg" alt="图片加载失败"></p>
+<p>到此为止，Messenger 的进程间通信就算完成了，下面我们结合一张 Messenger 的工作原理图来更好的理解 Messenger。</p>
+<p><img src="/2017/11/05/Messenger-的实现/3.jpg" alt="图片加载失败"></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a><strong>小结</strong></h2><p>到这里结合最后这张 Messenger 的工作原理图，我们来整理一下代码的思路。</p>
+<ol>
+<li><p>新建一个 Service 运行在 独立进程中，模拟服务端。</p>
+<p> Service 中有一个 Messenger 用来接收客户端的消息并在 MessengerHandler 中处理。 这个 Messenger 在 onBind（） 中被返回。</p>
+</li>
+<li><p>在默认进程中 绑定服务端的 Service，再绑定成功时用返回的 Messenger 给服务端发送消息。</p>
+</li>
+<li><p>如何客户端需要接受 服务端返回的消息，则需要在客户端 创建一个用来 获取服务端消息的 Messenger 及 MessengerHander 。并且在给服务端发送消息时将这个 获取服务端消息的Messenger 通过 <strong>msg.reply = Messenger</strong> 的方式发送过去。</p>
+</li>
+</ol>
+
     </div>
 
     <div class="post-footer">   
@@ -199,8 +299,10 @@
 
 <div class="article-nav prev-next-wrap clearfix">
     
+        <a href="/2017/11/13/AIDL-实现进程通信/" class="pre-post btn btn-default"><i class="fa fa-angle-left fa-fw"></i>上一篇</a>
     
-        <a href="/2017/11/13/AIDL-实现进程通信/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
+    
+        <a href="/2017/11/03/Android-IPC机制学习笔记-三/" class="next-post btn btn-default">下一篇<i class="fa fa-angle-right fa-fw"></i></a>
     
 </div>
 
