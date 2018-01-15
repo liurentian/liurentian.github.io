@@ -176,9 +176,9 @@
     public Messenger (IBinder target){
         mTarget = IMessenger.Stub.asInterface(target);
     }
-</code></pre><p>具体的实现请看 <a href="http://www.androidchina.net/5035.html" target="_blank" rel="noopener">Messenger 实现进程通信</a></p>
+</code></pre><p>具体的实现请看 <a href="http://liurentian.com/2017/11/05/Messenger-%E7%9A%84%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">Messenger 实现进程通信</a></p>
 <h3 id="4、使用-AIDL"><a href="#4、使用-AIDL" class="headerlink" title="4、使用 AIDL"></a><strong>4、使用 AIDL</strong></h3><p>上面讲到 Messenger，我们先来回顾一下 Messenger 的特点，Messenger 是以串行的方式一个一个地来处理客户端的消息的，如果并发请求较多时，Messenger 显然不太合适，而且 Messenger 只是用来传递消息的，不能跨进程调用服务端的方法，这时候就需要使用 AIDL 来解决问题了。 AIDL 也是 Messenger 的底层实现。因此 Messenger 的本质也是 AIDL，只不过系统给我们做了封装从而方便上层调用。</p>
-<p>具体的实现请看 <a href="http://www.androidchina.net/5035.html" target="_blank" rel="noopener">AIDL 实现进程通信</a></p>
+<p>具体的实现请看 <a href="http://liurentian.com/2017/11/13/AIDL-%E5%AE%9E%E7%8E%B0%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1/" target="_blank" rel="noopener">AIDL 实现进程通信</a></p>
 <h3 id="5、使用-ContentProvider"><a href="#5、使用-ContentProvider" class="headerlink" title="5、使用 ContentProvider"></a><strong>5、使用 ContentProvider</strong></h3><h3 id="6、使用-Socket"><a href="#6、使用-Socket" class="headerlink" title="6、使用 Socket"></a><strong>6、使用 Socket</strong></h3>
     </div>
 
