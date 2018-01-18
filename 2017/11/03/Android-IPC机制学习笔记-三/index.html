@@ -179,7 +179,12 @@
 </code></pre><p>具体的实现请看 <a href="http://liurentian.com/2017/11/05/Messenger-%E7%9A%84%E5%AE%9E%E7%8E%B0/" target="_blank" rel="noopener">Messenger 实现进程通信</a></p>
 <h3 id="4、使用-AIDL"><a href="#4、使用-AIDL" class="headerlink" title="4、使用 AIDL"></a><strong>4、使用 AIDL</strong></h3><p>上面讲到 Messenger，我们先来回顾一下 Messenger 的特点，Messenger 是以串行的方式一个一个地来处理客户端的消息的，如果并发请求较多时，Messenger 显然不太合适，而且 Messenger 只是用来传递消息的，不能跨进程调用服务端的方法，这时候就需要使用 AIDL 来解决问题了。 AIDL 也是 Messenger 的底层实现。因此 Messenger 的本质也是 AIDL，只不过系统给我们做了封装从而方便上层调用。</p>
 <p>具体的实现请看 <a href="http://liurentian.com/2017/11/13/AIDL-%E5%AE%9E%E7%8E%B0%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1/" target="_blank" rel="noopener">AIDL 实现进程通信</a></p>
-<h3 id="5、使用-ContentProvider"><a href="#5、使用-ContentProvider" class="headerlink" title="5、使用 ContentProvider"></a><strong>5、使用 ContentProvider</strong></h3><h3 id="6、使用-Socket"><a href="#6、使用-Socket" class="headerlink" title="6、使用 Socket"></a><strong>6、使用 Socket</strong></h3>
+<h3 id="5、使用-ContentProvider"><a href="#5、使用-ContentProvider" class="headerlink" title="5、使用 ContentProvider"></a><strong>5、使用 ContentProvider</strong></h3><h3 id="6、使用-Socket"><a href="#6、使用-Socket" class="headerlink" title="6、使用 Socket"></a><strong>6、使用 Socket</strong></h3><p>Socket 也称 “套接字”,是网络通信中的概念。它分为流式套接字和用户数据报套接字两种，分别对应于网络的传输控制层的 TCP 和 UDP 协议。 </p>
+<p>TCP 协议是面向连接的协议，提供稳定的双向通信功能，TCP连接的建立需要经过 “三次握手” 才能完成，为了提供稳定的数据传输功能，其本身提供了超时重传机制，因此具有很高的稳定性； 而 UDP 是无连接的，提供不稳定的单向通信功能，当然 UDP 也可以实现双向通信功能。 在性能上 UDP 具有更好的效率，其缺点是不一定能保证数据一定能正确传输。尤其在网络拥塞的情况下。</p>
+<p>关于 Socket 和 TCP UDP就介绍到这，下面我们看一下 <a href="http://liurentian.com/2017/11/13/AIDL-%E5%AE%9E%E7%8E%B0%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1/" target="_blank" rel="noopener">Socket 实现进程通信</a></p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>一张图分析一下6中方式的优缺点：</p>
+<p><img src="/2017/11/03/Android-IPC机制学习笔记-三/1.png" alt="图片加载失败"></p>
+
     </div>
 
     <div class="post-footer">   
@@ -309,7 +314,7 @@
         
     <div class="widget">
         <h3 class="title">分类</h3>
-        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/"><i class="fa" aria-hidden="true">Android</i></a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link current" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">2</span></li></ul>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/"><i class="fa" aria-hidden="true">Android</i></a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link current" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">2</span></li></ul>
     </div>
 
 
@@ -317,7 +322,7 @@
         
     <div class="widget">
       <h3 class="title">归档</h3>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">十二月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">十一月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">十月 2017</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">九月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">七月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">六月 2017</i></a><span class="archive-list-count">1</span></li></ul>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">十二月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">十一月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">十月 2017</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">九月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">七月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">六月 2017</i></a><span class="archive-list-count">1</span></li></ul>
     </div>
 
 
