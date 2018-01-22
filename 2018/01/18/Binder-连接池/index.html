@@ -155,13 +155,238 @@
     </div>
     
     <div class="post-body post-content">
-        
+        <h2 id="Binder-连接池的使用场景"><a href="#Binder-连接池的使用场景" class="headerlink" title="Binder 连接池的使用场景"></a><strong>Binder 连接池的使用场景</strong></h2><p>前面讲了不同的 IPC 方式，我们再来回顾一次 AIDL 的大致流程： 首先创建一个 Service 和 AIDL 的接口，接着创建一个类继承 AIDL 接口中的 Stub 类并实现 Stub 中的抽象方法，在 Service 中的 onBind 中返回这个类的对象，然后客户端就可以绑定服务端 Service ,建立连接后就可以远程访问服务端的方法了。</p>
+<p>上述方式就是 AIDL 的常用方式，当两三个少量的业务需求看上去并没有什么问题，但是如果 AIDL 的接口使用的越来越多，我们难道还要跟着创建对应数量的 Service 么？ Service 是我们的四大组件之一，本身就是十分占用资源的。显然这种方式并不行。</p>
+<p>针对这种情况，我们可以减少 Service 的数量，将所有的 AIDL 的接口放在同一个 Service 中去管理。</p>
+<p>在这种情况下，它的工作模式是这样的，每个业务接口创建自己的 AIDL 接口并实现此接口，这个时候不同业务模块之间不能有耦合，所有细节我们单独开来，然后想服务端提供自己唯一的标识和其对应的 Binder 对象；<br>对于服务端来说，只需要一个 Service 就可以了，服务端提供一个 queryBinder 接口，这个接口能根据业务模块的特征来返回相应的 Binder 对象给它们。 不同的业务模块拿到自己所需的 Binder 对象后就可以进行远程方法调用了。</p>
+<p>由此可见，Binder 连接池的主要作用就是将每个 业务模块的的 Binder 请求统一转发到远程 Service 中去执行，从而避免了重复创建 Service 的过程，它的工作原理如图所示：</p>
+<p><img src="/2018/01/18/Binder-连接池/1.png" alt="图片加载失败"></p>
+<h2 id="Binder-连接池代码实现"><a href="#Binder-连接池代码实现" class="headerlink" title="Binder 连接池代码实现"></a><strong>Binder 连接池代码实现</strong></h2><p>首先，提供两个 AIDL 接口（ISecurityCenter,ICompute）来模拟业务接口。</p>
+<pre><code>// ISecurityCenter.aidl
+package com.ydsd.binderdemo.binder;
+
+interface ISecurityCenter {
+    String encrypt(String content);
+    String decrypt(String password);
+}
+
+
+// ICompute.aidl
+package com.ydsd.binderdemo.binder;
+
+interface ICompute {
+    int add(int a,int b);
+}
+</code></pre><p>接着分别实现上面两个接口：</p>
+<pre><code>
+public class SecurityCenterImpl extends ISecurityCenter.Stub{
+
+    private static final char SECRET_CODE = &#39;^&#39;;
+
+    @Override
+    public String encrypt(String content) throws RemoteException {
+        char[] chars = content.toCharArray();
+        for (int i=0;i&lt;chars.length;i++){
+            chars[i] ^= SECRET_CODE;
+        }
+        return new String(chars);
+    }
+
+    @Override
+    public String decrypt(String password) throws RemoteException {
+        return encrypt(password);
+    }
+}
+</code></pre><pre><code>public class ComputeImpl extends ICompute.Stub {
+
+    @Override
+    public int add(int a, int b) throws RemoteException {
+        return a+b;
+    }
+}
+</code></pre><p>到这里，业务模块的接口和实现都已经完成了，这里并没有给每个 AIDL 单独创建 Service ，接下来就是服务端和 Binder 的连接池了。</p>
+<p>首先，给 Binder连接池创建 AIDL 接口 ：</p>
+<pre><code>// IBinderPool.aidl
+package com.ydsd.binderdemo.binder;
+
+interface IBinderPool {
+    IBinder queryBinder(int binderCode);
+}
+</code></pre><p>接着，为 Binder 连接池创建远程 Service 并实现 IBinderPool。 远程 Service 如下：</p>
+<pre><code>public class BinderPoolService extends Service{
+
+    private static final String TAG = &quot;BinderPoolService&quot;;
+
+    private Binder mBinderPool = new  BinderPool.BinderPoolImpl();
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return mBinderPool;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+}
+</code></pre><p>下面就是 Binder 连接池的具体实现，在它的内部首先要先绑定远程服务，绑定成功后，客户端就可以通过它的 queryBinder 方法获取各自的 Binder 对象。 代码如下：</p>
+<pre><code>public class BinderPool {
+    private static final String TAG = &quot;BinderPool&quot;;
+
+    public static final int BINDER_SECURITY_CENTER = 1;
+    public static final int BINDER_COMPUTE = 0;
+    public static final int BINDER_NONE = -1;
+
+    private Context mContext;
+    private IBinderPool mBinderPool;
+    private static volatile BinderPool sInstance;
+    private CountDownLatch mConnectBinderPoolCountDownLatch;
+
+    private BinderPool(Context mContext) {
+        this.mContext = mContext.getApplicationContext();
+        connectionBinderPoolService();
+    }
+
+    public static BinderPool getInstance(Context context) {
+        if (sInstance == null) {
+            synchronized (BinderPool.class) {
+                if (sInstance == null) {
+                    sInstance = new BinderPool(context);
+                }
+            }
+        }
+
+        return sInstance;
+    }
+
+    private synchronized void connectionBinderPoolService() {
+        mConnectBinderPoolCountDownLatch = new CountDownLatch(1);
+        Intent service = new Intent(mContext, BinderPoolService.class);
+        mContext.bindService(service, mBinderPoolConnection, Context.BIND_AUTO_CREATE);
+        try {
+            mConnectBinderPoolCountDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public IBinder queryBinder(int binderCode) {
+        IBinder binder = null;
+        try {
+            if (mBinderPool != null) {
+                binder = mBinderPool.queryBinder(binderCode);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return binder;
+
+    }
+
+    private ServiceConnection mBinderPoolConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            mBinderPool = IBinderPool.Stub.asInterface(iBinder);
+            try {
+                mBinderPool.asBinder().linkToDeath(mBinderPoolDeathRecipient,0);
+
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            mConnectBinderPoolCountDownLatch.countDown();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    };
+
+
+    private IBinder.DeathRecipient mBinderPoolDeathRecipient = new IBinder.DeathRecipient() {
+        @Override
+        public void binderDied() {
+            Log.d(TAG,&quot;binder 死亡&quot;);
+            mBinderPool.asBinder().unlinkToDeath(mBinderPoolDeathRecipient,0);
+            mBinderPool = null;
+            connectionBinderPoolService();
+        }
+    };
+
+    public static class BinderPoolImpl extends  IBinderPool.Stub {
+
+        @Override
+        public IBinder queryBinder(int binderCode) throws RemoteException {
+            IBinder binder = null;
+            switch (binderCode){
+                case BINDER_SECURITY_CENTER:
+                    binder = new SecurityCenterImpl();
+                    break;
+                case BINDER_COMPUTE:
+                    binder = new ComputeImpl();
+                    break;
+                default:
+            }
+            return binder;
+        }
+    }
+
+}
+</code></pre><p>最后是在 activity 中测试一下：</p>
+<pre><code>public class BinderPoolActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_binder_pool);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                doWork();
+            }
+        }).start();
+    }
+
+
+    private void doWork(){
+        BinderPool binderPool = BinderPool.getInstance(this);
+        IBinder securityBninder = binderPool.queryBinder(BinderPool.BINDER_SECURITY_CENTER);
+        System.out.println(&quot;visit ISecurityCenter&quot;);
+        ISecurityCenter mSecurityCenter = (ISecurityCenter) SecurityCenterImpl.asInterface(securityBninder);
+        System.out.println(&quot;visit ISecurityCenter&quot;);
+        String msg = &quot;helloworld - 安卓&quot;;
+        System.out.println(&quot;content:&quot;+msg);
+        try {
+            String password = mSecurityCenter.encrypt(msg);
+            System.out.println(&quot;encrypt:&quot;+password);
+            System.out.println(&quot;decrypt:&quot;+mSecurityCenter.decrypt(password));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        IBinder computeBnder = binderPool.queryBinder(BinderPool.BINDER_COMPUTE);
+        ICompute mCompute = ComputeImpl.asInterface(computeBnder);
+
+        System.out.println(&quot;visit mCompute&quot;);
+        try {
+            System.out.println(&quot;3 + 5 = &quot;+mCompute.add(3,5));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
     </div>
 
     <div class="post-footer">   
         <div>
             
-                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">Snippet</a>
+                转载声明：商业转载请联系作者获得授权,非商业转载请注明出处 © <a href="" target="_blank">liurentian.com</a>
             
         </div>
         <div>
