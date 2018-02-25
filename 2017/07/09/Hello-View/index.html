@@ -98,10 +98,10 @@
                             <li role="presentation"><a href="/categories/Android/"><i class="fa fa-fw "></i>Android</a>
                             </li>
                         
-                            <li role="presentation"><a href="/categories/后端/"><i class="fa fa-fw "></i>后端</a>
+                            <li role="presentation"><a href="/"><i class="fa fa-fw "></i>后端</a>
                             </li>
                         
-                            <li role="presentation"><a href="/categories/工具/"><i class="fa fa-fw "></i>工具</a>
+                            <li role="presentation"><a href="/"><i class="fa fa-fw "></i>工具</a>
                             </li>
                         
                             <li role="presentation"><a href="/categories/随笔/"><i class="fa fa-fw "></i>随笔</a>
@@ -155,13 +155,21 @@
     </div>
     
     <div class="post-body post-content">
-        <blockquote><p>　作为一个 Android 开发者，几乎每一个 Android 项目都离不开 View，虽然说 View 不属于四大组件，但它的重要性丝毫不低于它们，因此今天让我们来重新认识一下 View。</p>
-</blockquote>
-<h2 id="1、什么是-View-？"><a href="#1、什么是-View-？" class="headerlink" title="1、什么是 View ？"></a>1、什么是 View ？</h2><pre><code>    View（视图）是 Android 中所有控件的基类，不管是简单的 TextView 和 Button 还是 RelativeLayout 和 ListView 他们的共同基类都是 View 。RelativeLayout 继承的 ViewGroup （控件组）也继承自 View ，ViewGroup 内部包含了许多个控件，即一组 View 。所以说 View 是一种界面层的控件的一种抽象，它代表了一个控件或一组控件。
-</code></pre><p>下面一张图可以帮助你理解常用的控件关系</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h2><p>作为一个 Android 开发者，几乎每一个 Android 项目都离不开 View，虽然说 View 不属于四大组件，但它的重要性丝毫不低于它们，因此今天让我们来重新认识一下 View。</p>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a><strong>目录</strong></h2><ol>
+<li>什么是 View</li>
+<li>View 的位置参数</li>
+<li>View 的四个构造函数</li>
+<li>View 的生命周期</li>
+<li>MotionEvent 和 TouchSlop</li>
+<li>VelocityTracker、GestureDetector 和 Scroller</li>
+</ol>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a><strong>正文</strong></h2><h2 id="1、什么是-View-？"><a href="#1、什么是-View-？" class="headerlink" title="1、什么是 View ？"></a>1、什么是 View ？</h2><p> View（视图）是 Android 中所有控件的基类，不管是简单的 TextView 和 Button 还是 RelativeLayout 和 ListView 他们的共同基类都是 View 。RelativeLayout 继承的 ViewGroup （控件组）也继承自 View ，ViewGroup 内部包含了许多个控件，即一组 View 。所以说 View 是一种界面层的控件的一种抽象，它代表了一个控件或一组控件。</p>
+<p>下面一张图可以帮助你理解常用的控件关系</p>
 <p><img src="/2017/07/09/Hello-View/1.png" alt="图片加载失败"><br><br></p>
-<h2 id="2、View-的位置参数"><a href="#2、View-的位置参数" class="headerlink" title="2、View 的位置参数"></a>2、View 的位置参数</h2><pre><code>    View 的位置主要由它的四个顶点来决定，分别对应与 View 的四个属性： top、left、right、bottom。需要注意的是，这些坐标都是相对与 View 的父容器来说的，因此它是一种相对坐标。 View 的坐标和父容器的关系见下图：
-</code></pre><p><img src="/2017/07/09/Hello-View/2.png" alt="图片加载失败"></p>
+<h2 id="2、View-的位置参数"><a href="#2、View-的位置参数" class="headerlink" title="2、View 的位置参数"></a>2、View 的位置参数</h2><p> View 的位置主要由它的四个顶点来决定，分别对应与 View 的四个属性： top、left、right、bottom。需要注意的是，这些坐标都是相对与 View 的父容器来说的，因此它是一种相对坐标。 </p>
+<p> View 的坐标和父容器的关系见下图：</p>
+<p><img src="/2017/07/09/Hello-View/2.png" alt="图片加载失败"></p>
 <p>根据这张图，我们可以很容易的得出 View 的宽高和坐标的关系：</p>
 <pre><code>width = right - left 
 height = bottom - top
@@ -207,6 +215,69 @@ y = top  + translationY
 </ol>
 <p><strong>所以 View 的生命关键周期为：</strong></p>
 <pre><code>[改变可见性] --&gt; 构造View() --&gt; onFinishInflate() --&gt; onAttachedToWindow() --&gt; onMeasure() --&gt; onSizeChanged() --&gt;onLayout() --&gt; onDraw() --&gt; onDetackedFromWindow()
+</code></pre><p><br></p>
+<h2 id="5、MotionEvent-和-TouchSlop"><a href="#5、MotionEvent-和-TouchSlop" class="headerlink" title="5、MotionEvent 和 TouchSlop"></a>5、MotionEvent 和 TouchSlop</h2><p><br></p>
+<h3 id="5-1、关于-MotionEvent-。官方是这样介绍的："><a href="#5-1、关于-MotionEvent-。官方是这样介绍的：" class="headerlink" title="5.1、关于 MotionEvent 。官方是这样介绍的："></a><strong>5.1、关于 MotionEvent 。官方是这样介绍的：</strong></h3><p>Object used to report movement (mouse, pen, finger, trackball) events.<br>对象用于报告动作（鼠标、笔、手指、轨迹球）的事件。</p>
+<p>简单的来说，我们在手机屏幕上的各种触摸操作都会产生一个个的事件，这些事件被封装成了一个个的 MotionEvent 对象，然后被传递给需要它的 View。</p>
+<p>以手指为例,在手指接触屏幕后所产生的一系列事件中，典型的事件类型有如下几种：</p>
+<pre><code>ACTION_DOWN —— 手指刚接触屏幕
+ACTION_MOVE —— 手指在屏幕上移动
+ACTION_UP —— 手指从屏幕上松开的一瞬间
+</code></pre><p>正常情况下，一次手指触摸屏幕的行为会触发一系列点击事件，考虑如下几种情况：</p>
+<pre><code>点击屏幕后离开松开，事件序列为 DOWN –&gt; UP；
+点击屏幕滑动一会再松开，事件序列为 DOWN –&gt; MOVE –&gt; ……&gt; MOVE –&gt; UP；
+</code></pre><p>上述两种情况就是典型的事件序列，同时通过 MotionEvent 对象我们可以得到点击事件发生的 x 和 y 坐标。为此系统提供了 getX/getY 和 getRawX/getRawY 两种方法。其中 getX/getY 返回的是相对与当前 View 左上角的 x 和 y 坐标，而 getRawX/getRawY 返回的是相对与手机屏幕左上角的 x 和 y 坐标。</p>
+<h3 id="5-2、TouchSlop"><a href="#5-2、TouchSlop" class="headerlink" title="5.2、TouchSlop"></a><strong>5.2、TouchSlop</strong></h3><p>TouchSlop 是系统所能识别出的被认为是滑动的最小距离，换句话说，当我们的手指在屏幕上滑动时，如果两次滑动之间的距离小于这个常量，那么系统就不认为你是在进行滑动操作。 这是一个常量，在不同的设备上的值可能不同。通过如下方式获取这个常量：</p>
+<p>ViewConfiguration.get(getContext()).getScaledTouchSlop()。  </p>
+<p>我们可以在处理滑动时用这个常量来做一些过滤</p>
+<p><br></p>
+<h2 id="6、VelocityTracker、GestureDetector-和-Scroller"><a href="#6、VelocityTracker、GestureDetector-和-Scroller" class="headerlink" title="6、VelocityTracker、GestureDetector 和 Scroller"></a>6、VelocityTracker、GestureDetector 和 Scroller</h2><h3 id="6-1、VelocityTracker"><a href="#6-1、VelocityTracker" class="headerlink" title="6.1、VelocityTracker"></a><strong>6.1、VelocityTracker</strong></h3><p> 速度追踪，用于追踪手指在滑动过程中的速度。包括水平和垂直方向的速度。</p>
+<p> 它的使用过程很简单，首先在 View 的 OnTouchEvent 方法中追踪当前单击事件的速度：</p>
+<pre><code>  VelocityTracker velocityTracker = VelocityTracker.obtain();
+
+  velocityTracker.addMovement(event);
+</code></pre><p> 接着，可以通过如下方式获取当前速度：</p>
+<pre><code> velocityTracker.computeCurrentVelocity(1000);
+
+ int xVelocity = (int) velocityTracker.getXVelocity();
+ int yVelocity = (int) velocityTracker.getYVelocity();
+</code></pre><p>这一点，需要注意的是，在获取速度前需要先调用  velocityTracker.computeCurrentVelocity(1000) 计算速度。 这里的速度指的是在一段时间内手指滑动的像素数。</p>
+<p>速度 = （终点位置 - 起点位置） / 时间段</p>
+<p>最后，当不需要使用它的时候，需要调用 clear 方法来重置并回收内存。</p>
+<pre><code>velocityTracker.clear();
+velocityTracker.recycle();
+</code></pre><h3 id="6-2、GestureDetector"><a href="#6-2、GestureDetector" class="headerlink" title="6.2、GestureDetector"></a><strong>6.2、GestureDetector</strong></h3><p>手势检测，用于辅助检测用户的单击、滑动长按、双击等行为。要使用 GestureDetector 也不复杂。</p>
+<p>首先，创建一个 GestureDetector 对象并实现 OnGestureListener 接口，根据需要我们还可以实现 OnDoubleTapListener 从而能够监听双击行为：</p>
+<pre><code> GestureDetector mGestureDetector = new GestureDetector(this);
+ //解决长按屏幕无法拖动现象
+ mGestureDetector.setIsLongpressEnabled(false);
+</code></pre><p>接着，接管目标 View 的onTouchEvent 的方法，在待监听 View 的 onTouchEvent 方法中添加如下实现 ：</p>
+<pre><code> boolean consume = mGestureDetector.onTouchEvent(event);
+ return consume;
+</code></pre><p>做完上面两步，我们就可以有选择地实现 OnGestureListener 和 OnDoubleTapListener 中的方法了；</p>
+<p>方法介绍如下：</p>
+<p><img src="/2017/07/09/Hello-View/4.png" alt="图片加载失败"><br><img src="/2017/07/09/Hello-View/5.png" alt="图片加载失败"></p>
+<h3 id="6-3、Scroller"><a href="#6-3、Scroller" class="headerlink" title="6.3、Scroller"></a><strong>6.3、Scroller</strong></h3><p>弹性滑动对象，用于实现 View 的弹性滑动，我们知道当使用 scrollTo/scrollBy 方式来进行滑动时，其过程是瞬间完成的，这个没有过度效果的滑动用户体验很不好。这时候就可以用 Scroller 来实现有过度效果的动画。 Scrlller 本身无法让 View 弹性滑动，它需要和 View 的 computeScroll 方法配合使用。</p>
+<p>使用 Scroller 它的代码是固定的，如下：</p>
+<pre><code>
+    Scroller scroller=new Scroller(context);
+
+    //缓慢滚动到指定位置
+    private void smoothScrollTo(int destX,int destY){
+        int scrollX = getScrollX();
+        int delta = destX - scrollX;
+        //  1000 m 内滑向 destx
+        mScroller.startScroll(scrollX,0,delta,0,1000);
+       invalidate();
+    }
+
+    @Override
+    public void computeScroll() {
+        if (mScroller.computeScrollOffset()){
+            scrollTo(mScroller.getCurrX(),mScroller.getCurrY());
+            postInvalidate();
+        }
+    }
 </code></pre><hr>
 <p><strong>参考资料</strong><br><a href="http://www.androidchina.net/5035.html" target="_blank" rel="noopener">【Android 面试题总结之Android 进阶】</a><br><a>【Android 开发艺术探索】</a><br><a href="https://www.jianshu.com/p/08e6dab7886e" target="_blank" rel="noopener">【Android View的生命周期】</a></p>
 
@@ -339,7 +410,7 @@ y = top  + translationY
         
     <div class="widget">
         <h3 class="title">分类</h3>
-        <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Android/"><i class="fa" aria-hidden="true">Android</i></a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link current" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">2</span></li></ul>
+        <ul class="category-list"><li class="category-list-item"><a class="category-list-link current" href="/categories/Android/"><i class="fa" aria-hidden="true">Android</i></a><span class="category-list-count">11</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/随笔/"><i class="fa" aria-hidden="true">随笔</i></a><span class="category-list-count">2</span></li></ul>
     </div>
 
 
@@ -347,7 +418,7 @@ y = top  + translationY
         
     <div class="widget">
       <h3 class="title">归档</h3>
-        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">十二月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">十一月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">十月 2017</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">九月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">七月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">六月 2017</i></a><span class="archive-list-count">1</span></li></ul>
+        <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/"><i class="fa" aria-hidden="true">二月 2018</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/01/"><i class="fa" aria-hidden="true">一月 2018</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/"><i class="fa" aria-hidden="true">十二月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/11/"><i class="fa" aria-hidden="true">十一月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/"><i class="fa" aria-hidden="true">十月 2017</i></a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/"><i class="fa" aria-hidden="true">九月 2017</i></a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/"><i class="fa" aria-hidden="true">七月 2017</i></a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/"><i class="fa" aria-hidden="true">六月 2017</i></a><span class="archive-list-count">1</span></li></ul>
     </div>
 
 
