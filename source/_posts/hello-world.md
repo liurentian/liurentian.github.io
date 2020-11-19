@@ -1,55 +1,38 @@
 ---
-title: hello world
-comments: true
-date: 2017-06-22 
-categories:	随笔
-tags:
-img:
+title: Hello World
 ---
+Welcome to [Hexo](https://hexo.io/)! This is your very first post. Check [documentation](https://hexo.io/docs/) for more info. If you get any problems when using Hexo, you can find the answer in [troubleshooting](https://hexo.io/docs/troubleshooting.html) or you can ask me on [GitHub](https://github.com/hexojs/hexo/issues).
 
-{% blockquote %}
+## Quick Start
 
-折腾了两天，嗯、对是两天。总算把这个东西搞出来了。
+### Create a new post
 
-第一篇文章的名字 老规矩 hello world 。
+``` bash
+$ hexo new "My New Post"
+```
 
-先来几张图，因为这可能就是我开始写博客的原因之一
+More info: [Writing](https://hexo.io/docs/writing.html)
 
-{% endblockquote %}
+### Run server
 
-<br>
+``` bash
+$ hexo server
+```
 
-![图片加载失败](1.jpg)
+More info: [Server](https://hexo.io/docs/server.html)
 
-![图片加载失败](2.jpg)
+### Generate static files
 
-![图片加载失败](3.jpg)
-<br>
-{% blockquote %}
+``` bash
+$ hexo generate
+```
 
-是的，快毕业了。在之前很长的一段时间里，我都以为毕业还早着呢。直到从上一个星期开始，朋友圈各种毕业照刷屏、校园里到处可见的卖书、卖车······
+More info: [Generating](https://hexo.io/docs/generating.html)
 
-这本该属于大三学长学姐们的毕业庆典让我们也提前享受了一番
+### Deploy to remote sites
 
-与这些外界的环境相比，真正让我感受到了毕业的还是因为我宿舍的一个兄弟在三天前已经正式迈入了社会，其他的小伙伴也开始忙起来去参加各种面试。
+``` bash
+$ hexo deploy
+```
 
-尽管上课我大多都认认真真的在学习，但当毕业真正的到来时，我非常地清楚我还差的远。
-
-两年前，我是个菜鸟，什么都不会。但我不怕，因为我知道我有足够的时间。但两年后呢，如果我还是什么都不会，我不知道我还有什么。
-
-{% endblockquote %}
-
-
-
-![图片加载失败](4.jpg)
-
-<br>
-
-{% blockquote LiuRenTian %}
-
-谁能年少不痴狂，独自闯荡
-
-静三631，我们一年后再见
-
-谨此见证我一年后的成长
-{% endblockquote %}
+More info: [Deployment](https://hexo.io/docs/one-command-deployment.html)
