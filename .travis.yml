@@ -20,7 +20,7 @@ notifications:
   # 邮件发送部署结果通知
   email:
     recipients:
-      - snippet@91h5.cc
+      - 972377892@qq.com
     on_success: change
     on_failure: always
 
@@ -56,6 +56,6 @@ branches:
     - dev
 env:
  global:
-   - GH_REF: github.com/shenliyang/shenliyang.github.io.git
+   - GH_REF: github.com/liurentian/liurentian.github.io.git
    - GITEE_REF: gitee.com/shenliyang/shenliyang.git
 
